@@ -8,11 +8,20 @@ df = sns.load_dataset('titanic')
 
 # Exploration first: subset and filter
 print("First 5 rows:\n", df.head())
+print("\nDataset shape:", df.shape)
+print("\nColumn names:", df.columns)
+# print the passenger id column if it exists
+if 'passenger_id' in df.columns:
+    print("\nPassenger IDs:\n", df['passenger_id'].head())
+else :
+    df = df.reset_index().rename(columns={'index': 'passenger_id'})
+    print("\nPassenger IDs [Created]:\n", df['passenger_id'].head())
 subset = df[df['age'] > 30]  # Filter example
 print("\nAdults over 30:\n", subset[['age', 'sex', 'survived']].head())
 
 # Grouping and aggregation
-grouped = df.groupby('class')['fare'].agg(['mean', 'median', 'count'])
+grouped = df.groupby('class', observed=True)['fare'].agg(['mean', 'median', 'count'])
+
 print("\nFare stats by class:\n", grouped.round(2))
 
 # NumPy array operations
@@ -25,5 +34,6 @@ df1 = df[['passenger_id', 'survived']]
 df2 = df[['passenger_id', 'age', 'fare']]
 merged = pd.merge(df1, df2, on='passenger_id')
 print("\nMerged shape:", merged.shape)
+print("\nMerged head:\n", merged.head())
 
 # Exercise: Group by 'sex' and compute survival rate
